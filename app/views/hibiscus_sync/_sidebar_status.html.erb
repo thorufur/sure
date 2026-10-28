@@ -1,0 +1,8 @@
+<%# locals: (frame_id:) %>
+
+<%= turbo_frame_tag frame_id,
+                    src: hibiscus_sync_status_path(frame_id: frame_id),
+                    loading: "lazy",
+                    class: "block px-1" do %>
+  <p class="text-sm text-secondary">Synchronisationsstatus wird geladen…</p>
+<% end %>

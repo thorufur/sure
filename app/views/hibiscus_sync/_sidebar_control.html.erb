@@ -1,0 +1,10 @@
+<%= render DS::Link.new(
+  variant: "icon",
+  icon: "refresh-cw",
+  href: sync_all_accounts_path,
+  method: :post,
+  frame: :_top,
+  title: "Bankkonten aktualisieren",
+  aria: { label: "Bankkonten aktualisieren" },
+  class: "shrink-0"
+) %>

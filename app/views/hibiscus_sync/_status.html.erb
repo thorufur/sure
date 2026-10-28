@@ -1,0 +1,21 @@
+<% bank_status = local_assigns.fetch(:bank_status) { HibiscusBankClient.visible_status(Current.user) } %>
+<% compact = local_assigns.fetch(:compact, false) %>
+<% if bank_status %>
+  <% finished_at = begin
+       Time.iso8601(bank_status["finished_at"]).in_time_zone("Europe/Berlin")
+     rescue TypeError, ArgumentError
+       nil
+     end %>
+  <p class="text-sm text-secondary" role="status">
+    <% case bank_status["state"] %>
+    <% when "running" %>
+      Bankabruf läuft: <%= bank_status["finished_accounts"] %>/<%= bank_status["total_accounts"] %> Konten fertig.
+      <% unless compact %>Bitte gegebenenfalls in der Bank-App freigeben. Seite zur Statusanzeige neu laden.<% end %>
+    <% when "completed" %>
+      Letzter Hibiscus-Sync<%= finished_at ? ": #{finished_at.strftime("%d.%m.%Y, %H:%M Uhr")}" : "" %> · erfolgreich<%= compact ? "" : " · Daten nach Sure übernommen" %>.
+    <% when "failed", "needs_attention" %>
+      Letzter Hibiscus-Sync<%= finished_at ? ": #{finished_at.strftime("%d.%m.%Y, %H:%M Uhr")}" : "" %> · Aktion erforderlich.
+      <% unless compact %>Bitte Freigabe in der Bank-App und das Protokoll in Hibiscus prüfen.<% end %>
+    <% end %>
+  </p>
+<% end %>
