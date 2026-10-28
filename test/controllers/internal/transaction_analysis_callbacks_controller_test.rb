@@ -25,7 +25,8 @@ class Internal::TransactionAnalysisCallbacksControllerTest < ActionDispatch::Int
          params: body,
          headers: signed_headers(body)
 
-    assert_response :no_content
+    assert_response :success
+    assert_equal({ "ok" => true }, response.parsed_body)
     assert_equal "completed", @transaction.reload.analysis_status
   end
 
@@ -54,7 +55,8 @@ class Internal::TransactionAnalysisCallbacksControllerTest < ActionDispatch::Int
          params: body,
          headers: { "CONTENT_TYPE" => "application/json", "Authorization" => "Bearer callback-secret" }
 
-    assert_response :no_content
+    assert_response :success
+    assert_equal({ "ok" => true }, response.parsed_body)
     assert_equal "needs_review", @transaction.reload.analysis_status
   end
 

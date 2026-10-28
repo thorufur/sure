@@ -13,7 +13,7 @@ class Internal::TransactionAnalysisCallbacksController < ActionController::API
       transaction.complete_analysis!(job_id: payload["job_id"], result: payload)
     end
 
-    head :no_content
+    render json: { ok: true }
   rescue JSON::ParserError, ActionController::BadRequest
     head :bad_request
   end
