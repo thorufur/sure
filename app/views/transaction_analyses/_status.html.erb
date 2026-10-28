@@ -4,15 +4,18 @@
 <%= turbo_frame_tag dom_id(transaction, :analysis_status),
       data: (active ? {
         controller: "polling",
+        polling_frame_id_value: "modal",
         polling_url_value: transaction_analysis_path(transaction),
         polling_interval_value: 2500
       } : {}) do %>
   <div class="space-y-4">
     <% if active %>
-      <%= render DS::Alert.new(
-        variant: :info,
-        message: t("transaction_analyses.show.running")
-      ) %>
+      <div class="rounded-lg border border-primary bg-container-inset p-4" role="status" aria-live="polite">
+        <div class="flex items-center gap-3">
+          <%= icon "loader-circle", size: "md", class: "shrink-0 animate-spin text-info" %>
+          <p class="text-sm font-medium text-primary"><%= t("transaction_analyses.show.running") %></p>
+        </div>
+      </div>
     <% elsif state["status"] == "failed" %>
       <%= render DS::Alert.new(
         variant: :warning,

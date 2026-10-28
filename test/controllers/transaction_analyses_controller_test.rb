@@ -26,6 +26,22 @@ class TransactionAnalysesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Likely Apple", @transaction.analysis["prompt"]
   end
 
+  test "polls the modal and shows an animated status while analysis is active" do
+    @transaction.queue_analysis!(requested_by: @user)
+
+    get transaction_analysis_url(@transaction), headers: { "Turbo-Frame" => "modal" }
+
+    assert_response :success
+    assert_select "turbo-frame#modal"
+    frame_id = ActionView::RecordIdentifier.dom_id(@transaction, :analysis_status)
+    assert_select "turbo-frame##{frame_id}[data-controller='polling']" do
+      assert_select "[data-polling-frame-id-value='modal']"
+      assert_select "[data-polling-url-value='#{transaction_analysis_path(@transaction)}']"
+      assert_select "[role='status'][aria-live='polite']"
+      assert_select ".animate-spin"
+    end
+  end
+
   test "does not expose another family's transaction" do
     account = Account.create!(
       family: families(:empty), owner: users(:empty), name: "Other checking",
