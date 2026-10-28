@@ -1,0 +1,15 @@
+<% state = transaction.analysis %>
+<% label, tone, icon = case state["status"]
+when "queued", "running" then [ t("transaction_analyses.states.running"), :info, "loader" ]
+when "completed" then [ t("transaction_analyses.states.completed"), :success, "circle-check" ]
+when "needs_review" then [ t("transaction_analyses.states.needs_review"), :warning, "triangle-alert" ]
+when "failed" then [ t("transaction_analyses.states.failed"), :error, "circle-alert" ]
+else [ t("transaction_analyses.states.analyze"), :neutral, "sparkles" ]
+end %>
+
+<%= link_to transaction_analysis_path(transaction),
+      data: { turbo_frame: "modal", turbo_prefetch: false },
+      title: t("transaction_analyses.open"),
+      class: "inline-flex" do %>
+  <%= render DS::Pill.new(label: label, tone: tone, marker: false, icon: icon) %>
+<% end %>

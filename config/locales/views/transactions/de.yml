@@ -1,5 +1,37 @@
 ---
 de:
+  transaction_analyses:
+    open: Transaktionsanalyse öffnen
+    states:
+      analyze: Analyse
+      running: Läuft …
+      completed: Analysiert
+      needs_review: Prüfen
+      failed: Fehler
+    confidences:
+      high: Hoch
+      medium: Mittel
+      low: Niedrig
+    create:
+      enqueue_failed: Die Analyse konnte nicht eingereiht werden.
+    show:
+      title: Transaktion analysieren
+      subtitle: "Rechnungen und Details zu %{transaction} recherchieren"
+      running: Paperless und die lokale KI analysieren diese Transaktion.
+      failed: "Analyse fehlgeschlagen: %{error}"
+      no_summary: Die Analyse wurde ohne Zusammenfassung beendet.
+      confidence: Sicherheit
+      amount_check: Betragsprüfung
+      exact: Exakte Übereinstimmung
+      different: Betrag weicht ab
+      documents: Paperless-Dokumente
+      open_document: Öffnen
+      reasoning: Bewertung
+      prompt_label: Zusätzlicher Hinweis
+      prompt_placeholder: Optionaler Hinweis, zum Beispiel zum vermuteten Einkauf oder Empfänger
+      cancel: Abbrechen
+      analyze: Analysieren
+      analyze_again: Erneut analysieren
   transactions:
     unknown_name: Unbekannte Transaktion
     form:

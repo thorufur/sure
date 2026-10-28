@@ -103,6 +103,8 @@
                       ) %>
                     <% end %>
 
+                    <%= render "transactions/analysis_link", transaction: transaction %>
+
                     <%# Potential duplicate indicator - different styling for low vs medium confidence %>
                     <% if transaction.has_potential_duplicate? %>
                       <% if transaction.low_confidence_duplicate? %>

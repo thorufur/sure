@@ -4,6 +4,10 @@ require "json"
 class HibiscusBankClient
   class Error < StandardError; end
 
+  def self.configured?
+    File.readable?("/run/secrets/hibiscus-trigger-token")
+  end
+
   def self.request(path, body = nil)
     uri = URI("http://hibiscus-sure:3001" + path)
     req = body ? Net::HTTP::Post.new(uri) : Net::HTTP::Get.new(uri)

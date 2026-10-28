@@ -1,5 +1,6 @@
 class Transaction < ApplicationRecord
   include Entryable, Transferable, Ruleable, Splittable
+  include Analyzable
 
   belongs_to :category, optional: true
   belongs_to :merchant, optional: true

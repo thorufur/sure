@@ -1,0 +1,12 @@
+<%= turbo_frame_tag "modal" do %>
+  <%= render DS::Dialog.new(width: "lg") do |dialog| %>
+    <% dialog.with_header(
+      title: t("transaction_analyses.show.title"),
+      subtitle: t("transaction_analyses.show.subtitle", transaction: @entry.name)
+    ) %>
+
+    <% dialog.with_body do %>
+      <%= render "transaction_analyses/status", transaction: @transaction, entry: @entry %>
+    <% end %>
+  <% end %>
+<% end %>

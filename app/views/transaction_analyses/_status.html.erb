@@ -1,0 +1,104 @@
+<% state = transaction.analysis %>
+<% active = transaction.analysis_active? %>
+
+<%= turbo_frame_tag dom_id(transaction, :analysis_status),
+      data: (active ? {
+        controller: "polling",
+        polling_url_value: transaction_analysis_path(transaction),
+        polling_interval_value: 2500
+      } : {}) do %>
+  <div class="space-y-4">
+    <% if active %>
+      <%= render DS::Alert.new(
+        variant: :info,
+        message: t("transaction_analyses.show.running")
+      ) %>
+    <% elsif state["status"] == "failed" %>
+      <%= render DS::Alert.new(
+        variant: :warning,
+        message: t("transaction_analyses.show.failed", error: state["error"])
+      ) %>
+    <% elsif state["status"].in?(%w[completed needs_review]) %>
+      <% result = state["result"] || {} %>
+
+      <%= render DS::Alert.new(
+        variant: state["status"] == "completed" ? :success : :warning,
+        message: result["summary"].presence || t("transaction_analyses.show.no_summary")
+      ) %>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+        <div class="rounded-lg bg-container-inset p-3">
+          <p class="text-secondary"><%= t("transaction_analyses.show.confidence") %></p>
+          <p class="text-primary font-medium"><%= t("transaction_analyses.confidences.#{result["confidence"] || "low"}") %></p>
+        </div>
+        <% if result.dig("amount_match", "booking_cents") %>
+          <div class="rounded-lg bg-container-inset p-3">
+            <p class="text-secondary"><%= t("transaction_analyses.show.amount_check") %></p>
+            <p class="text-primary font-medium">
+              <%= result.dig("amount_match", "exact") ? t("transaction_analyses.show.exact") : t("transaction_analyses.show.different") %>
+            </p>
+          </div>
+        <% end %>
+      </div>
+
+      <% if Array(result["documents"]).any? %>
+        <div class="space-y-2">
+          <h3 class="font-medium text-primary"><%= t("transaction_analyses.show.documents") %></h3>
+          <% result["documents"].each do |document| %>
+            <div class="flex items-center justify-between gap-3 rounded-lg border border-secondary p-3">
+              <div class="min-w-0">
+                <p class="text-sm text-primary truncate"><%= document["title"] %></p>
+                <p class="text-xs text-secondary">
+                  <%= [ document["date"], (number_to_currency(document["amount_cents"].to_i / 100.0, unit: "€") if document["amount_cents"]) ].compact.join(" · ") %>
+                </p>
+              </div>
+              <% if document["url"].present? %>
+                <%= render DS::Link.new(
+                  text: t("transaction_analyses.show.open_document"),
+                  href: document["url"],
+                  target: "_blank"
+                ) %>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+
+      <% if result["reasoning"].present? %>
+        <div>
+          <h3 class="font-medium text-primary"><%= t("transaction_analyses.show.reasoning") %></h3>
+          <p class="text-sm text-secondary whitespace-pre-wrap"><%= result["reasoning"] %></p>
+        </div>
+      <% end %>
+    <% end %>
+
+    <% unless active %>
+      <%= form_with url: transaction_analysis_path(transaction), method: :post, data: { turbo_frame: "modal" } do |form| %>
+        <div class="space-y-3">
+          <div>
+            <%= form.label :prompt, t("transaction_analyses.show.prompt_label"), class: "text-sm text-primary block mb-1" %>
+            <%= form.text_area :prompt,
+                  name: "analysis[prompt]",
+                  value: state["prompt"],
+                  rows: 3,
+                  maxlength: 2000,
+                  class: "input",
+                  placeholder: t("transaction_analyses.show.prompt_placeholder") %>
+          </div>
+          <div class="flex justify-end gap-2">
+            <%= render DS::Button.new(
+              text: t("transaction_analyses.show.cancel"),
+              variant: :secondary,
+              type: :button,
+              data: { action: "DS--dialog#close" }
+            ) %>
+            <%= render DS::Button.new(
+              text: state["status"].present? ? t("transaction_analyses.show.analyze_again") : t("transaction_analyses.show.analyze"),
+              type: :submit
+            ) %>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>

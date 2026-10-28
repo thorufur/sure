@@ -1,5 +1,37 @@
 ---
 en:
+  transaction_analyses:
+    open: Open transaction analysis
+    states:
+      analyze: Analyze
+      running: Analyzing
+      completed: Analyzed
+      needs_review: Review
+      failed: Failed
+    confidences:
+      high: High
+      medium: Medium
+      low: Low
+    create:
+      enqueue_failed: The analysis could not be queued.
+    show:
+      title: Transaction analysis
+      subtitle: "Research invoices and details for %{transaction}"
+      running: Paperless and the local AI are analyzing this transaction.
+      failed: "Analysis failed: %{error}"
+      no_summary: The analysis completed without a summary.
+      confidence: Confidence
+      amount_check: Amount check
+      exact: Exact match
+      different: Amount differs
+      documents: Paperless documents
+      open_document: Open
+      reasoning: Assessment
+      prompt_label: Additional information
+      prompt_placeholder: Optional hint, for example the likely purchase or recipient
+      cancel: Cancel
+      analyze: Analyze
+      analyze_again: Analyze again
   transactions:
     bulk_updates:
       new:

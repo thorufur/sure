@@ -551,6 +551,7 @@ Rails.application.routes.draw do
   end
 
   resources :transactions, only: %i[index new create show update destroy] do
+    resource :analysis, only: %i[show create], controller: :transaction_analyses
     resource :split, only: %i[new create edit update destroy]
     resource :transfer_match, only: %i[new create]
     resource :pending_duplicate_merges, only: %i[new create]
@@ -570,6 +571,10 @@ Rails.application.routes.draw do
       post :unlock
       patch :tags, action: :update_tags
     end
+  end
+
+  namespace :internal do
+    post :transaction_analysis_callbacks, to: "transaction_analysis_callbacks#create"
   end
 
   resources :bills, only: %i[index show] do

@@ -7,6 +7,6 @@ class CreateHibiscusDepotConnections < ActiveRecord::Migration[8.1]
       t.datetime :last_imported_at
       t.timestamps
     end
-    add_index :hibiscus_depot_connections, [:family_id, :hibiscus_account_id], unique: true, name: "idx_hibiscus_depot_family_source"
+    add_index :hibiscus_depot_connections, [ :family_id, :hibiscus_account_id ], unique: true, name: "idx_hibiscus_depot_family_source"
   end
 end

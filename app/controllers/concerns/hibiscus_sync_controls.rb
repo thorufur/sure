@@ -1,7 +1,8 @@
 module HibiscusSyncControls
   def sync
+    return super unless HibiscusBankClient.configured?
     return head :forbidden unless Account.writable_by(Current.user).exists?(id: @account.id)
-    result = HibiscusBankClient.start([@account.id])
+    result = HibiscusBankClient.start([ @account.id ])
     return super unless result
     redirect_to account_path(@account), notice: hibiscus_notice(result)
   rescue HibiscusBankClient::Error
@@ -9,6 +10,7 @@ module HibiscusSyncControls
   end
 
   def sync_all
+    return super unless HibiscusBankClient.configured?
     result = HibiscusBankClient.start(Account.writable_by(Current.user).active.pluck(:id))
     return super unless result
     family.request_plaid_transactions_refreshes_later(source: "AccountsController#sync_all")
@@ -20,9 +22,9 @@ module HibiscusSyncControls
 
   private
 
-  def hibiscus_notice(result)
-    return "In Hibiscus läuft bereits ein Bankabruf. Bitte dessen Abschluss abwarten." if result["already_running"]
-    result["state"] == "completed" ? "Der letzte Bankabruf wurde gerade abgeschlossen." :
-      "Bankabruf in Hibiscus gestartet. Bitte gegebenenfalls in der Bank-App freigeben. Die Daten werden anschließend automatisch übernommen."
-  end
+    def hibiscus_notice(result)
+      return "In Hibiscus läuft bereits ein Bankabruf. Bitte dessen Abschluss abwarten." if result["already_running"]
+      result["state"] == "completed" ? "Der letzte Bankabruf wurde gerade abgeschlossen." :
+        "Bankabruf in Hibiscus gestartet. Bitte gegebenenfalls in der Bank-App freigeben. Die Daten werden anschließend automatisch übernommen."
+    end
 end
