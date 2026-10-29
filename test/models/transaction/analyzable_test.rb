@@ -22,6 +22,20 @@ class Transaction::AnalyzableTest < ActiveSupport::TestCase
     assert_equal "459", @transaction.extra.dig("hibiscus", "original", "id")
   end
 
+  test "queuing a new analysis removes the previous generated note and document links" do
+    @entry.update!(notes: Transaction::AnalysisNote.replace(
+      "Manual note",
+      "Old result\nAmazon invoice: https://paperless.example/documents/12/details"
+    ))
+
+    @transaction.queue_analysis!(requested_by: @user, prompt: "Try again")
+
+    assert_equal "queued", @transaction.reload.analysis_status
+    assert_equal "Manual note", @entry.reload.notes
+    assert_not_includes @entry.notes, Transaction::AnalysisNote::START_MARKER
+    assert_not_includes @entry.notes, "paperless.example"
+  end
+
   test "completes the current job and replaces only the generated note block" do
     @entry.update!(notes: "Manual note")
     job_id = @transaction.queue_analysis!(requested_by: @user)

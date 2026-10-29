@@ -29,6 +29,9 @@ module Transaction::Analyzable
 
     with_lock do
       update!(extra: (extra || {}).merge("analysis" => state))
+
+      cleaned_notes = Transaction::AnalysisNote.without_analysis(entry.notes)
+      entry.update!(notes: cleaned_notes.presence) unless cleaned_notes == entry.notes.to_s
     end
 
     job_id
