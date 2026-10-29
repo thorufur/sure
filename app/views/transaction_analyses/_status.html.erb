@@ -54,6 +54,11 @@
                 <p class="text-xs text-secondary">
                   <%= [ document["date"], (number_to_currency(document["amount_cents"].to_i / 100.0, unit: "€") if document["amount_cents"]) ].compact.join(" · ") %>
                 </p>
+                <% if document["reference_number"].present? %>
+                  <p class="text-xs text-secondary">
+                    <%= t("transaction_analyses.show.reference_number", reference: document["reference_number"]) %>
+                  </p>
+                <% end %>
               </div>
               <% if document["url"].present? %>
                 <%= render DS::Link.new(

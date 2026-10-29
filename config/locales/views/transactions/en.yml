@@ -25,6 +25,7 @@ en:
       exact: Exact match
       different: Amount differs
       documents: Paperless documents
+      reference_number: "Reference: %{reference}"
       open_document: Open
       reasoning: Assessment
       prompt_label: Additional information

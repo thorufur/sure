@@ -25,6 +25,7 @@ de:
       exact: Exakte Übereinstimmung
       different: Betrag weicht ab
       documents: Paperless-Dokumente
+      reference_number: "Referenz: %{reference}"
       open_document: Öffnen
       reasoning: Bewertung
       prompt_label: Zusätzlicher Hinweis

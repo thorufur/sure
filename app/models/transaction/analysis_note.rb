@@ -36,6 +36,7 @@ class Transaction::AnalysisNote
       Array(result["documents"]).each do |document|
         label = document["title"].presence || "Paperless ##{document["id"]}"
         label += " (#{money(document["amount_cents"])})" if document["amount_cents"]
+        label += " — Referenz: #{document["reference_number"]}" if document["reference_number"].present?
         lines << [ label, document["url"] ].compact.join(": ")
       end
 

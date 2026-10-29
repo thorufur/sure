@@ -58,7 +58,8 @@ class Transaction::AnalysisResult
             "title" => text(data["title"], 500) || "Paperless ##{id}",
             "url" => safe_url(data["url"]),
             "date" => safe_date(data["date"]),
-            "amount_cents" => integer(data["amount_cents"])
+            "amount_cents" => integer(data["amount_cents"]),
+            "reference_number" => text(data["reference_number"], 255)
           }.compact
         end
       end
